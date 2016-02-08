@@ -28,7 +28,7 @@ Cursor cursor;
         String password=getIntent().getStringExtra("password");
         db=new DetailsDb(this);
         cursor=db.validate(email,password);
-        text=(TextView)findViewById(R.id.welcometext);
+        text=(TextView)findViewById(R.id.welcome_text);
         cursor.moveToFirst();
         if(cursor!=null)
         {

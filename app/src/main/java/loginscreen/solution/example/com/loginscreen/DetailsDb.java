@@ -23,18 +23,16 @@ public class DetailsDb {
     public DetailsDb(Context context)
     {
         this.context=context;
-        Log.d(TAG,"constructr");
         dbhelper=new DbHelper();
     }
     public void insert(ContentValues values){
         try {
             database = dbhelper.getWritableDatabase();
             database.insertOrThrow(dbhelper.TABLE_NAME, null, values);
-            Log.d(TAG, "data inserted");
         }
         catch(SQLException e)
         {
-            Log.d(TAG,e.getMessage());
+            e.printStackTrace();
         }
         finally
         {
@@ -46,7 +44,7 @@ public class DetailsDb {
     public Cursor query(){
         database=dbhelper.getReadableDatabase();
         Cursor cur=database.query(DbHelper.TABLE_NAME, null, null, null, null, null, null);
-        Log.d(TAG, "cursor returned");
+
         return cur;
 
     }
@@ -57,7 +55,6 @@ public class DetailsDb {
         String sql="select * from details where email= ? and password=?";
         String arr[]={email,password};
         Cursor cur=database.rawQuery(sql,arr);
-        Log.d(TAG,cur.toString());
         return cur;
     }
     private class DbHelper extends SQLiteOpenHelper{
@@ -66,14 +63,14 @@ public class DetailsDb {
         private static final String TABLE_NAME="details";
         public DbHelper() {
             super(context,DB_NAME,null, DB_VERSION);
-            Log.d(TAG,"Database created");
+
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
             String sql=String.format("create table %s(%s text ,%s text primary key,%s text,%s int)",TABLE_NAME,USERNAME,EMAIL,PASSWORD,PHONE);
             db.execSQL(sql);
-            Log.d(TAG, "table created");
+
 
 
         }
@@ -81,7 +78,6 @@ public class DetailsDb {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             db.execSQL("drop table if exists"+TABLE_NAME);
-            Log.d(TAG,"table dropped on upgrade");
             this.onCreate(db);
 
         }

@@ -17,7 +17,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/linearLayout">
+        android:id="@+id/linear_layout">
     <Button
         android:id="@+id/login"
 
@@ -50,7 +50,7 @@
         >
     <EditText style="@style/EditText"
         android:layout_width="0dp"
-        android:id="@+id/firstname"
+        android:id="@+id/first_name"
         android:layout_weight="1"
         android:hint="First Name"
         android:backgroundTint="#CC5ec639"
@@ -59,7 +59,7 @@
         />
     <EditText style="@style/EditText"
         android:layout_width="0dp"
-        android:id="@+id/lastname"
+        android:id="@+id/last_name"
         android:layout_weight="1"
         android:hint="Last Name"
         android:layout_marginLeft="10dp"
@@ -73,13 +73,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/common"
+        android:id="@+id/common_layout"
 
         >
         <EditText style="@style/EditText"
             android:layout_width="365dp"
             android:inputType="textEmailAddress"
-            android:id="@+id/email1"
+            android:id="@+id/email"
             android:hint="Email"
             android:backgroundTint="#CC5ec639"
 
@@ -88,7 +88,7 @@
         <EditText style="@style/EditText"
             android:layout_width="match_parent"
             android:inputType="textPassword"
-            android:id="@+id/pass1"
+            android:id="@+id/password"
             android:layout_marginTop="20dp"
             android:hint="Password"
             android:backgroundTint="#CC5ec639"
@@ -99,7 +99,7 @@
     <ViewFlipper
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/viewFlipper"
+        android:id="@+id/view_flipper"
         android:animateFirstView="true">
         <LinearLayout
             android:orientation="vertical"
@@ -112,7 +112,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sign In"
-            android:id="@+id/login1"
+            android:id="@+id/sign_in"
              android:layout_marginTop="60dp"
 
                android:allowUndo="true"

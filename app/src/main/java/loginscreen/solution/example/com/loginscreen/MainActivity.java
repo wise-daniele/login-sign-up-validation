@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,18 +22,18 @@ ViewFlipper flipper;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        flipper=(ViewFlipper)findViewById(R.id.viewFlipper);
+        flipper=(ViewFlipper)findViewById(R.id.view_flipper);
         final Button b1=(Button)findViewById(R.id.login);
         final Button b2=(Button)findViewById(R.id.signup);
-        final Button log=(Button)findViewById(R.id.login1);
+        final Button log=(Button)findViewById(R.id.sign_in);
         final Button signup=(Button)findViewById(R.id.create);
         boolean e=false,n=false;
         b1.setBackgroundResource(R.color.buttoncolor);
-        text1=(EditText)findViewById(R.id.email1);
-        text2=(EditText)findViewById(R.id.pass1);
+        text1=(EditText)findViewById(R.id.email);
+        text2=(EditText)findViewById(R.id.password);
         text3=(EditText)findViewById(R.id.phone);
-        text4=(EditText)findViewById(R.id.firstname);
-        text5=(EditText)findViewById(R.id.lastname);
+        text4=(EditText)findViewById(R.id.first_name);
+        text5=(EditText)findViewById(R.id.last_name);
 
         final LinearLayout layout=(LinearLayout)findViewById(R.id.names);
         progressDialog = new ProgressDialog(MainActivity.this);
@@ -134,9 +133,6 @@ ViewFlipper flipper;
         String regexm="^[0-9]{10}$";
         String regexp="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*(_|[^\\w])).+$";
         boolean valid=true;
-        Log.d(TAG,"email:"+email);
-        Log.d(TAG,"number"+number);
-        Log.d(TAG,password);
         if(firstname.isEmpty())
             text4.setError("First Name cant be empty");
         else text4.setError(null);
@@ -168,7 +164,6 @@ ViewFlipper flipper;
             text2.setError("Password should be atleast 6 characters long");
         else
             text2.setError(null);
-        Log.d(TAG, String.valueOf(valid));
 
         return valid;
     }

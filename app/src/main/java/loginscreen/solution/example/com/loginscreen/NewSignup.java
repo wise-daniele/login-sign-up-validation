@@ -28,7 +28,7 @@ DetailsDb db;
         String password=getIntent().getStringExtra("password");
         String phone=getIntent().getStringExtra("phone");
 
-        TextView text=(TextView)findViewById(R.id.textView);
+        TextView text=(TextView)findViewById(R.id.text_view);
         text.setText("Hi "+name+" you have signed up successfully");
         db=new DetailsDb(this);
         ContentValues values=new ContentValues();
@@ -36,7 +36,6 @@ DetailsDb db;
         values.put(DetailsDb.EMAIL,email);
         values.put(DetailsDb.PASSWORD,password);
         values.put(DetailsDb.PHONE,phone);
-        Log.d("DetailsDb","Lets Insert");
         db.insert(values);
 
 
