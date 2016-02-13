@@ -11,7 +11,6 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -19,10 +18,14 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="EditText">
-        <item name="android:layout_height">45dp</item>
         <item name="android:textColorHint">@color/hint</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:shape">rectangle</item>
+        <item name="android:backgroundTint">@color/textboxTint</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="TextView">
+        <item name="android:backgroundTint">@color/textboxTint</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
 </resources>

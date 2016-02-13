@@ -19,10 +19,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NewSignup"
-            android:label="@string/title_activity_new_signup"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".WelcomeActivity"
             android:label="@string/title_activity_welcome"
             android:theme="@style/AppTheme.NoActionBar"></activity>

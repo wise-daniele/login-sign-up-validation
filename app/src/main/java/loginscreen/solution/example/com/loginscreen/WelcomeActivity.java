@@ -9,7 +9,7 @@ import android.widget.TextView;
 public class WelcomeActivity extends AppCompatActivity {
 Cursor cursor;
     DetailsDb db;
-    TextView text;
+    TextView tv_name,tv_email,tv_phone;
 
     @Override
     public void onBackPressed() {
@@ -23,22 +23,24 @@ Cursor cursor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome);
+        setContentView(R.layout.content_welcome);
         String email=getIntent().getStringExtra("email");
         String password=getIntent().getStringExtra("password");
         db=new DetailsDb(this);
         cursor=db.validate(email,password);
-        text=(TextView)findViewById(R.id.welcome_text);
+        tv_name=(TextView)findViewById(R.id.tv_name);
+        tv_email=(TextView)findViewById(R.id.tv_email);
+        tv_phone=(TextView)findViewById(R.id.tv_phone);
         cursor.moveToFirst();
         if(cursor!=null)
         {
            String name= cursor.getString(cursor.getColumnIndex("username"));
            String phone=cursor.getString(cursor.getColumnIndex("phone"));
-           text.setText("Name:\t"+name+"\nEmail:\t"+email+"\nphone:\t"+phone);
+           tv_name.setText(name);
+           tv_email.setText(email);
+           tv_phone.setText(phone);
 
         }
-        else
-            text.setText("No such user");
 
     }
 

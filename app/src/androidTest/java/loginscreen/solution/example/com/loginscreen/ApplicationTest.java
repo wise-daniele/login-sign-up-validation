@@ -1,185 +1,106 @@
 package loginscreen.solution.example.com.loginscreen;
 
+import android.content.ComponentName;
+
+import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
+import junit.framework.Assert;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
-import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.not;
+
 
 @RunWith(AndroidJUnit4.class)
 
-public class ApplicationTest  {
+public class ApplicationTest {
+
     @Rule
-    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule(MainActivity.class);
+    public IntentsTestRule<MainActivity> mActivityRule = new IntentsTestRule(MainActivity.class);
 
-
-    @Test
-    public void test1()
-    {
-        onView(withId(R.id.signup)).perform(click());
-        onView(withId(R.id.first_name)).perform(typeText("Arpith"), closeSoftKeyboard());
-        onView(withId(R.id.last_name)).perform(click(),replaceText("Patil"),closeSoftKeyboard());
-        onView(withId(R.id.email)).perform(click(),replaceText("arpith@hackerrank.com"),closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(click(),replaceText("Patil@123"),closeSoftKeyboard());
-        onView(withId(R.id.phone)).perform(typeText("9872938476"),closeSoftKeyboard());
-        onView(withId(R.id.create)).perform(click());
-        Log.d("aa","sas: "+R.id.text_view);
-        onView(withId(R.id.text_view)).check(matches(withText("Hi Arpith Patil you have signed up successfully")));
+    public void perform_signup(String name, String email, String password, String phone) {
+        onView(withId(R.id.bt_signup)).perform(click());
+        onView(withId(R.id.et_name)).perform(replaceText(name), closeSoftKeyboard());
+        onView(withId(R.id.et_email)).perform(replaceText(email), closeSoftKeyboard());
+        onView(withId(R.id.et_password)).perform(replaceText(password), closeSoftKeyboard());
+        onView(withId(R.id.et_phone)).perform(replaceText(phone), closeSoftKeyboard());
+        onView(withId(R.id.bt_create)).perform(click());
     }
-    @Test
-    public void test2()
-    {
-        onView(withId(R.id.signup)).perform(click());
-        onView(withId(R.id.first_name)).perform(typeText("Sam"), closeSoftKeyboard());
-        onView(withId(R.id.last_name)).perform(click(),replaceText("Clerk"),closeSoftKeyboard());
-        onView(withId(R.id.email)).perform(click(),replaceText(""),closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(click(),replaceText("aA123"),closeSoftKeyboard());
-        onView(withId(R.id.phone)).perform(typeText("8888888888"),closeSoftKeyboard());
-        onView(withId(R.id.create)).perform(click());
-        onView(withId(R.id.email)).check(matches(withError("Invalid Email")));
-        onView(withId(R.id.password)).check(matches(withError("Password must contain one uppercase,one lowercase,1 digit and one special character")));
 
-
-
-
+    public void perform_login(String email, String password) {
+        onView(withId(R.id.bt_login)).perform(click());
+        onView(withId(R.id.et_email)).perform(replaceText(email), closeSoftKeyboard());
+        onView(withId(R.id.et_password)).perform(replaceText(password), closeSoftKeyboard());
+        onView(withId(R.id.bt_sign_in)).perform(click());
     }
-    @Test
-    public void test3()
-    {
-        onView(withId(R.id.signup)).perform(click());
-        onView(withId(R.id.first_name)).perform(typeText(""), closeSoftKeyboard());
-        onView(withId(R.id.last_name)).perform(click(),replaceText(""),closeSoftKeyboard());
-        onView(withId(R.id.email)).perform(click(),replaceText("jkajs"),closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(click(),replaceText("shydh"),closeSoftKeyboard());
-        onView(withId(R.id.phone)).perform(typeText(""),closeSoftKeyboard());
-        onView(withId(R.id.create)).perform(click());
-        onView(withId(R.id.first_name)).check(matches(withError("First Name cant be empty")));
-        onView(withId(R.id.last_name)).check(matches(withError("Last name cant be empty")));
-        onView(withId(R.id.email)).check(matches(withError("Invalid Email")));
-        onView(withId(R.id.password)).check(matches(withError("Password must contain one uppercase,one lowercase,1 digit and one special character")));
-        onView(withId(R.id.phone)).check(matches(withError("Invalid Phone")));
 
+    public boolean verify_post_login(String name, String email, String phone) {
+        try {
+            // Verify if the current activity is WelcomeActivity
+            intended(hasComponent(new ComponentName(getTargetContext(), WelcomeActivity.class)));
+            // Verify if required fields are set successful login
+            onView(withId(R.id.tv_name)).check(matches(withText(name)));
+            onView(withId(R.id.tv_email)).check(matches(withText(email)));
+            onView(withId(R.id.tv_phone)).check(matches(withText(phone)));
+        } catch (AssertionError ae) {
+            return false;
+        }
+
+        return true;
     }
 
     @Test
-    public void test4()
-    {
-        onView(withId(R.id.signup)).perform(click());
-        onView(withId(R.id.first_name)).perform(typeText("sdsdd"), closeSoftKeyboard());
-        onView(withId(R.id.last_name)).perform(click(),replaceText("sdsdsd"),closeSoftKeyboard());
-        onView(withId(R.id.email)).perform(click(),replaceText(""),closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(click(),replaceText(""),closeSoftKeyboard());
-        onView(withId(R.id.phone)).perform(typeText(""), closeSoftKeyboard());
-        onView(withId(R.id.create)).perform(click());
-        onView(withId(R.id.email)).check(matches(withError("Invalid Email")));
-        onView(withId(R.id.password)).check(matches(withError("Password must contain one uppercase,one lowercase,1 digit and one special character")));
-        onView(withId(R.id.phone)).check(matches(withError("Invalid Phone")));
-        onView(withId(R.id.first_name)).perform(click(),replaceText("Aakansha"), closeSoftKeyboard());
-        onView(withId(R.id.last_name)).perform(click(), replaceText("Doshi"), closeSoftKeyboard());
-        onView(withId(R.id.email)).perform(click(), replaceText("aakansha1216@gmail.com"), closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(click(), replaceText("HelloWorld@123"), closeSoftKeyboard());
-        onView(withId(R.id.phone)).perform(replaceText("8916778293"), closeSoftKeyboard());
-        onView(withId(R.id.create)).perform(click());
-        onView(withId(R.id.text_view)).check(matches(withText("Hi Aakansha Doshi you have signed up successfully")));
-
-
-
-    }
-    @Test
-    public void test5()
-    {
-        onView(withId(R.id.login)).perform(click());
-        onView(withId(R.id.email)).perform(click(),typeText("aakansha1216"),closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(click(),typeText("HelloWorld@123"),closeSoftKeyboard());
-        onView(withId(R.id.sign_in)).perform(click());
-        onView(withId(R.id.email)).check(matches(withError("Invalid Email")));
-        onView(withId(R.id.email)).perform(click(), replaceText("aakansha1216@gmail.com"), closeSoftKeyboard());
-        onView(withId(R.id.sign_in)).perform(click());
-        onView(withId(R.id.welcome_text)).check(matches(withText("Name:\tAakansha Doshi\nEmail:\taakansha1216@gmail.com\nphone:\t8916778293")));
-
-
-
+    public void verify_successful_signup() {
+        perform_signup("Arpith Patil", "arpith@hackerrank.com", "Patil@123", "9872938476");
+        perform_signup("Arpith Patil1", "arpith1@hackerrank.com", "Patil@123", "9872938477");
+        perform_login("arpith@hackerrank.com", "Patil@123");
+        boolean success = verify_post_login("Arpith Patil", "arpith@hackerrank.com", "9872938476");
+        Assert.assertTrue(success);
     }
 
     @Test
-    public void test6()
-    {
-        onView(withId(R.id.email)).perform(click(), typeText("arpith@hackerrank.com"), closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(click(),typeText("HelloWorld@123"),closeSoftKeyboard());
-        onView(withId(R.id.sign_in)).perform(click());
-        onView(withText(R.string.loginfail)).inRoot(withDecorView(not((mActivityRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
-
+    public void verify_user_not_exist() {
+        perform_login("xyz@hackerrank.com", "P@ssw0rd");
+        boolean success = verify_post_login("", "xyz@hackerrank.com", "");
+        Assert.assertFalse(success);
     }
 
     @Test
-    public void test7()
-    {
-
-        onView(withId(R.id.email)).perform(click(),typeText("hari@hackerrank.com"),closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(click(),typeText("Hari@123"),closeSoftKeyboard());
-        onView(withId(R.id.sign_in)).perform(click());
-        onView(withText(R.string.loginfail)).inRoot(withDecorView(not((mActivityRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
-         onView(withId(R.id.signup)).perform(click());
-        onView(withId(R.id.first_name)).perform(click(),replaceText("Hari"), closeSoftKeyboard());
-        onView(withId(R.id.last_name)).perform(click(),replaceText("Karunanidhi"),closeSoftKeyboard());
-        onView(withId(R.id.email)).perform(click(),replaceText("hari@hackerrank.com"),closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(click(),replaceText("HAri@hacker1"),closeSoftKeyboard());
-        onView(withId(R.id.phone)).perform(typeText("9902538776"),closeSoftKeyboard());
-        onView(withId(R.id.create)).perform(click());
-        onView(withId(R.id.text_view)).check(matches(withText("Hi Hari Karunanidhi you have signed up successfully")));
-
-
+    public void verify_invalid_email() {
+        perform_signup("Adam", "adamhackerrank.com", "Adam@123", "9872938476");
+        perform_login("adamhackerrank.com", "Adam@123");
+        boolean success = verify_post_login("Adam", "adamhackerrank.com", "9872938476");
+        Assert.assertFalse(success);
     }
+
+
     @Test
-    public void test8()
-    {
-        onView(withId(R.id.login)).perform(click());
-        onView(withId(R.id.email)).perform(click(),typeText("hari@hackerrank.com"),closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(click(),typeText(""),closeSoftKeyboard());
-        onView(withId(R.id.sign_in)).perform(click());
-        onView(withId(R.id.password)).check(matches(withError("Password can be empty!!")));
-        onView(withId(R.id.password)).perform(click(), typeText("HAri@hacker1"), closeSoftKeyboard());
-        onView(withId(R.id.sign_in)).perform(click());
-        onView(withId(R.id.welcome_text)).check(matches(withText("Name:\tHari Karunanidhi\nEmail:\thari@hackerrank.com\nphone:\t9902538776")));
-
-
-
+    public void verify_invalid_phone() {
+        perform_signup("Adam1", "adam1@hackerrank.com", "Adam@123", "55555");
+        perform_login("adam1@hackerrank.com", "Adam@123");
+        boolean success = verify_post_login("Adam1", "adam1@hackerrank.com", "55555");
+        Assert.assertFalse(success);
     }
-    private static Matcher<View> withError(final String expected) {
-        return new TypeSafeMatcher<View>() {
 
-            @Override
-            public boolean matchesSafely(View view) {
-                if (!(view instanceof EditText)) {
-                    return false;
-                }
-                EditText editText = (EditText) view;
-                return editText.getError().toString().equals(expected);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-
-            }
-        };
+    @Test
+    public void verify_invalid_password_rule() {
+        perform_signup("Adam2", "adam2@hackerrank.com", "Adam", "9999999999");
+        perform_login("adam2@hackerrank.com", "Adam");
+        boolean success = verify_post_login("Adam2", "adam2@hackerrank.com", "9999999999");
+        Assert.assertFalse(success);
     }
+
 }
