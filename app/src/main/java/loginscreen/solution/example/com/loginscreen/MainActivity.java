@@ -22,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private Button mButtonCreate;
     private EditText mName;
     private EditText mPhone;
-    private EditText mEmail;
-    private EditText mPassword;
+    private EditText mEmail2;
+    private EditText mPassword2;
 
     private ViewFlipper mViewFlipper;
 
@@ -39,9 +39,9 @@ public class MainActivity extends AppCompatActivity {
         mButtonSignin = (Button) findViewById(R.id.bt_sign_in);
         mButtonCreate = (Button) findViewById(R.id.bt_create);
         mName = (EditText) findViewById(R.id.et_name);
-        mEmail = (EditText) findViewById(R.id.et_email);
+        mEmail2 = (EditText) findViewById(R.id.et_email_2);
         mPhone = (EditText) findViewById(R.id.et_phone);
-        mPassword = (EditText) findViewById(R.id.et_password);
+        mPassword2 = (EditText) findViewById(R.id.et_password_2);
 
 
         mButtonLogin.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                     validation = false;
                 }
                 if(!validateEmail()){
-                    mEmail.setError("Type a valid email");
+                    mEmail2.setError("Type a valid email");
                     validation = false;
                 }
                 if(!validatePhone()){
@@ -77,14 +77,14 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if(!validatePassword()){
-                    mPassword.setError("Type a valid password");
+                    mPassword2.setError("Type a valid password");
                     validation = false;
                 }
 
                 if(validation){
                     Intent intent = new Intent(MainActivity.this, LoginWelcomeActivity.class);
                     intent.putExtra("name", mName.getText());
-                    intent.putExtra("email", mEmail.getText());
+                    intent.putExtra("email", mEmail2.getText());
                     intent.putExtra("phone", mPhone.getText());
                     startActivity(intent);
                 }
@@ -116,8 +116,8 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean validateEmail(){
 
-        Editable email = mEmail.getText();
-        if(!TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        String email = mEmail2.getText().toString();
+        if(Patterns.EMAIL_ADDRESS.matcher(email).matches()){
             return true;
         }
         else{
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean validatePassword(){
-        String passStr = mPassword.getText().toString();
+        String passStr = mPassword2.getText().toString();
         if(passStr.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{6,}$")){
             return true;
         }
@@ -148,8 +148,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean validatePhone(){
-        String phoneStr = mPhone.getText().toString();
-        if(phoneStr.matches("^[0-9]{10,}$")){
+        Editable phoneStr = mPhone.getText();
+        if(Patterns.PHONE.matcher(phoneStr).matches()){
             return true;
         }
         else{
