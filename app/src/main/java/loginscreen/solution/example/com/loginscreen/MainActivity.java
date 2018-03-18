@@ -83,9 +83,9 @@ public class MainActivity extends AppCompatActivity {
 
                 if(validation){
                     Intent intent = new Intent(MainActivity.this, LoginWelcomeActivity.class);
-                    intent.putExtra("name", mName.getText());
-                    intent.putExtra("email", mEmail2.getText());
-                    intent.putExtra("phone", mPhone.getText());
+                    intent.putExtra("name", mName.getText().toString());
+                    intent.putExtra("email", mEmail2.getText().toString());
+                    intent.putExtra("phone", mPhone.getText().toString());
                     startActivity(intent);
                 }
             }
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean validatePassword(){
         String passStr = mPassword2.getText().toString();
-        if(passStr.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{6,}$")){
+        if(passStr.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=])(?=\\S+$).{6,}$")){
             return true;
         }
         else{
