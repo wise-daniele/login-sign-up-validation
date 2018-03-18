@@ -8,6 +8,13 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <provider
+            android:name="loginscreen.solution.example.com.loginscreen.data.MyAppProvider"
+            android:authorities="loginscreen.solution.example.com.loginscreen"
+            android:exported="false"
+            android:syncable="true" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

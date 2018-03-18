@@ -1,6 +1,7 @@
 package loginscreen.solution.example.com.loginscreen;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -14,6 +15,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ViewFlipper;
 
+import loginscreen.solution.example.com.loginscreen.data.MyAppContract;
+import loginscreen.solution.example.com.loginscreen.utils.DBUtils;
+import loginscreen.solution.example.com.loginscreen.utils.Validation;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button mButtonLogin;
@@ -22,8 +27,10 @@ public class MainActivity extends AppCompatActivity {
     private Button mButtonCreate;
     private EditText mName;
     private EditText mPhone;
-    private EditText mEmail2;
-    private EditText mPassword2;
+    private EditText mEmail;
+    private EditText mPassword;
+    private EditText mEmailSignup;
+    private EditText mPasswordSignup;
 
     private ViewFlipper mViewFlipper;
 
@@ -39,10 +46,11 @@ public class MainActivity extends AppCompatActivity {
         mButtonSignin = (Button) findViewById(R.id.bt_sign_in);
         mButtonCreate = (Button) findViewById(R.id.bt_create);
         mName = (EditText) findViewById(R.id.et_name);
-        mEmail2 = (EditText) findViewById(R.id.et_email_2);
+        mEmail = (EditText) findViewById(R.id.et_email);
+        mPassword = (EditText) findViewById(R.id.et_password);
+        mEmailSignup = (EditText) findViewById(R.id.et_email_signup);
+        mPasswordSignup = (EditText) findViewById(R.id.et_password_signup);
         mPhone = (EditText) findViewById(R.id.et_phone);
-        mPassword2 = (EditText) findViewById(R.id.et_password_2);
-
 
         mButtonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,34 +66,82 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mButtonSignin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean validation = true;
+                if(!Validation.validateEmail(mEmail.getText().toString())){
+                    mEmail.setError("Type a valid email");
+                    validation = false;
+                }
+
+                if(!Validation.validatePassword(mPassword.getText().toString())){
+                    mPassword.setError("Type a valid password");
+                    validation = false;
+                }
+                if(validation){
+                    Cursor cursor = DBUtils.getUser(MainActivity.this, mEmail.getText().toString());
+                    if(cursor != null && !cursor.isAfterLast()){
+                        int passwordIndex = cursor.getColumnIndex(MyAppContract.CredentialsEntry.COLUMN_PASSWORD);
+                        String password = cursor.getString(passwordIndex);
+                        if(password.equals(mPassword.getText().toString())){
+                            int nameIndex = cursor.getColumnIndex(MyAppContract.CredentialsEntry.COLUMN_NAME);
+                            int phoneIndex = cursor.getColumnIndex(MyAppContract.CredentialsEntry.COLUMN_PHONE);
+                            String name = cursor.getString(nameIndex);
+                            String phone = cursor.getString(phoneIndex);
+                            Intent intent = new Intent(MainActivity.this, LoginWelcomeActivity.class);
+                            intent.putExtra("name", name);
+                            intent.putExtra("email", mEmail.getText().toString());
+                            intent.putExtra("phone", phone);
+                            startActivity(intent);
+                            cursor.close();
+                            return;
+                        }
+                    }
+                    mName.setError("Wrong name or password");
+                    mPassword.setError("Wrong name or password");
+                    cursor.close();
+                }
+            }
+        });
+
         mButtonCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean validation = true;
 
-                if(!validateName()){
+                if(!Validation.validateName(mName.getText().toString())){
                     mName.setError("Type a valid name");
                     validation = false;
                 }
-                if(!validateEmail()){
-                    mEmail2.setError("Type a valid email");
+                if(!Validation.validateEmail(mEmailSignup.getText().toString())){
+                    mEmailSignup.setError("Type a valid email");
                     validation = false;
                 }
-                if(!validatePhone()){
+                if(!Validation.validatePhone(mPhone.getText().toString())){
                     mPhone.setError("Type a valid phone");
                     validation = false;
                 }
 
-                if(!validatePassword()){
-                    mPassword2.setError("Type a valid password");
+                if(!Validation.validatePassword(mPasswordSignup.getText().toString())){
+                    mPasswordSignup.setError("Type a valid password");
                     validation = false;
                 }
 
                 if(validation){
+                    String name = mName.getText().toString();
+                    String password = mPasswordSignup.getText().toString();
+                    String email = mEmailSignup.getText().toString();
+                    String phone = mPhone.getText().toString();
+                    boolean isPresent = DBUtils.insertUser(MainActivity.this, name, password, email, phone);
+                    if(isPresent){
+                        mEmailSignup.setError("User already registered");
+                        return;
+                    }
                     Intent intent = new Intent(MainActivity.this, LoginWelcomeActivity.class);
-                    intent.putExtra("name", mName.getText().toString());
-                    intent.putExtra("email", mEmail2.getText().toString());
-                    intent.putExtra("phone", mPhone.getText().toString());
+                    intent.putExtra("name", name);
+                    intent.putExtra("email", email);
+                    intent.putExtra("phone", phone);
                     startActivity(intent);
                 }
             }
@@ -112,48 +168,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private boolean validateEmail(){
-
-        String email = mEmail2.getText().toString();
-        if(Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            return true;
-        }
-        else{
-            return false;
-        }
-
-    }
-
-    private boolean validatePassword(){
-        String passStr = mPassword2.getText().toString();
-        if(passStr.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=])(?=\\S+$).{6,}$")){
-            return true;
-        }
-        else{
-            return false;
-        }
-
-    }
-
-    private boolean validateName(){
-        String nameStr = mName.getText().toString();
-        if(nameStr.matches("^[a-zA-Z0-9]*$")){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-
-    private boolean validatePhone(){
-        Editable phoneStr = mPhone.getText();
-        if(Patterns.PHONE.matcher(phoneStr).matches()){
-            return true;
-        }
-        else{
-            return false;
-        }
     }
 }
