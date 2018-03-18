@@ -111,6 +111,7 @@
             android:orientation="vertical">
 
             <EditText
+
                 android:id="@+id/et_name"
                 style="@style/EditText"
                 android:layout_height="wrap_content"
