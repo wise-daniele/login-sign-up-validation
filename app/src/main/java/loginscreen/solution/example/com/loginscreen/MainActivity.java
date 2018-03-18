@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mViewFlipper.setDisplayedChild(1);
+                mName.setVisibility(View.VISIBLE);
             }
         });
 

@@ -41,7 +41,6 @@
             android:text="Sign Up" />
     </LinearLayout>
 
-    <!--
     <LinearLayout
         android:id="@+id/lt_name"
         android:layout_width="match_parent"
@@ -57,8 +56,6 @@
             android:hint="Name"
             android:layout_width="match_parent" />
     </LinearLayout>
-
-    -->
 
     <LinearLayout
         android:id="@+id/lt_common"
@@ -109,14 +106,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <EditText
-
-                android:id="@+id/et_name"
-                style="@style/EditText"
-                android:layout_height="wrap_content"
-                android:hint="Name"
-                android:layout_width="match_parent" />
 
             <EditText
                 android:id="@+id/et_phone"
