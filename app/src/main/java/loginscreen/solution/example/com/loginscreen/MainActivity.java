@@ -1,152 +1,97 @@
 package loginscreen.solution.example.com.loginscreen;
 
-import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 public class MainActivity extends AppCompatActivity {
-    ViewFlipper flipper;
-    private static final String TAG = MainActivity.class.getSimpleName();
-    static DetailsDb db;
-    static EditText tv_email, tv_password, tv_phone, tv_name;
-    static String email, password, number, name;
-    static ProgressDialog progressDialog;
+
+    private Button mButtonLogin;
+    private Button mButtonSignup;
+    private Button mButtonSignin;
+    private Button mButtonCreate;
+    private EditText mName;
+    private EditText mPhone;
+    private EditText mEmail;
+    private EditText mPassword;
+
+    private ViewFlipper mViewFlipper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
-        flipper = (ViewFlipper) findViewById(R.id.view_flipper);
-        final Button b1 = (Button) findViewById(R.id.bt_login);
-        final Button b2 = (Button) findViewById(R.id.bt_signup);
-        final Button log = (Button) findViewById(R.id.bt_sign_in);
-        final Button signup = (Button) findViewById(R.id.bt_create);
-        boolean e = false, n = false;
-        b1.setBackgroundResource(R.color.buttoncolor);
-        tv_email = (EditText) findViewById(R.id.et_email);
-        tv_password = (EditText) findViewById(R.id.et_password);
-        tv_phone = (EditText) findViewById(R.id.et_phone);
-        tv_name = (EditText) findViewById(R.id.et_name);
 
-        final LinearLayout lt_name = (LinearLayout) findViewById(R.id.lt_name);
-        progressDialog = new ProgressDialog(MainActivity.this);
-        progressDialog.setCancelable(true);
-        db = new DetailsDb(this);
+        mButtonLogin = (Button) findViewById(R.id.bt_login);
+        mButtonSignup = (Button) findViewById(R.id.bt_signup);
+        mViewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
+        mButtonSignin = (Button) findViewById(R.id.bt_sign_in);
+        mButtonCreate = (Button) findViewById(R.id.bt_create);
+        mName = (EditText) findViewById(R.id.et_name);
+        mEmail = (EditText) findViewById(R.id.et_email);
+        mPhone = (EditText) findViewById(R.id.et_phone);
+        mPassword = (EditText) findViewById(R.id.et_password);
 
-        b2.setOnClickListener(new View.OnClickListener() {
+
+        mButtonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                b2.setBackgroundResource(R.color.buttoncolor);
-                b1.setBackgroundResource(R.color.white);
-                lt_name.setVisibility(View.VISIBLE);
-                flipper.setDisplayedChild(1);
+                mViewFlipper.setDisplayedChild(0);
 
             }
         });
-        b1.setOnClickListener(new View.OnClickListener() {
+
+        mButtonSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                b1.setBackgroundResource(R.color.buttoncolor);
-                b2.setBackgroundResource(R.color.white);
-                lt_name.setVisibility(View.INVISIBLE);
-                flipper.setDisplayedChild(0);
+                mViewFlipper.setDisplayedChild(1);
             }
         });
-        log.setOnClickListener(new View.OnClickListener() {
+
+        mButtonCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (validate_credentials()) {
-                    CheckCredentials ob = new CheckCredentials(getBaseContext());
-                    if (ob.isauthenticate(email, password)) {
-                        Intent in = new Intent(MainActivity.this, WelcomeActivity.class);
-                        in.putExtra("email", email);
-                        in.putExtra("password", password);
-                        startActivity(in);
-                    } else {
-                        Toast.makeText(MainActivity.this, R.string.loginfail, Toast.LENGTH_LONG).show();
-                    }
+                boolean validation = true;
+
+                if(!validateName()){
+                    mName.setError("Type a valid name");
+                    validation = false;
+                }
+                if(!validateEmail()){
+                    mEmail.setError("Type a valid email");
+                    validation = false;
+                }
+                if(!validatePhone()){
+                    mPhone.setError("Type a valid phone");
+                    validation = false;
+                }
+
+                if(!validatePassword()){
+                    mPassword.setError("Type a valid password");
+                    validation = false;
+                }
+
+                if(validation){
+                    Intent intent = new Intent(MainActivity.this, LoginWelcomeActivity.class);
+                    Log.d("LOG", mName.getText() + " " + mEmail.getText() + " "  + mPhone.getText() + " ");
+                    intent.putExtra("name", mName.getText());
+                    intent.putExtra("email", mEmail.getText());
+                    intent.putExtra("phone", mPhone.getText());
+                    startActivity(intent);
                 }
             }
         });
-
-        signup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validate_info()) {
-                    String name = tv_name.getText().toString();
-                    String email = tv_email.getText().toString();
-                    String password = tv_password.getText().toString();
-                    String phone = tv_phone.getText().toString();
-
-                    ContentValues values = new ContentValues();
-                    values.put(DetailsDb.USERNAME, name);
-                    values.put(DetailsDb.EMAIL, email);
-                    values.put(DetailsDb.PASSWORD, password);
-                    values.put(DetailsDb.PHONE, phone);
-                    db.insert(values);
-                }
-            }
-        });
-
-    }
-
-    public static boolean validate_credentials() {
-        email = tv_email.getText().toString();
-        password = tv_password.getText().toString();
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            tv_email.setError("Invalid Email");
-            return false;
-        }
-        if (password.isEmpty()) {
-            tv_password.setError("Password can be empty!!");
-            return false;
-        }
-        return true;
-    }
-
-    public static boolean validate_info() {
-
-        email = tv_email.getText().toString();
-        password = tv_password.getText().toString();
-        number = tv_phone.getText().toString();
-        name = tv_name.getText().toString();
-
-        String regexm = "^[0-9]{10}$";
-        String regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*(_|[^\\w])).+$";
-        boolean valid = true;
-        if (name.isEmpty())
-            tv_name.setError("Name can't be empty");
-        else tv_name.setError(null);
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            tv_email.setError("Invalid Email");
-            valid = false;
-        } else
-            tv_email.setError(null);
-        if (number.isEmpty() || number.length() != 10 || !number.matches(regexm)) {
-            tv_phone.setError("Invalid Phone");
-            valid = false;
-        } else
-            tv_phone.setError(null);
-        if (password.isEmpty() || !password.matches(regexp)) {
-
-            tv_password.setError("Password must contain one uppercase,one lowercase,1 digit and one special character");
-            valid = false;
-        } else if (password.length() < 6)
-            tv_password.setError("Password should be atleast 6 characters long");
-        else
-            tv_password.setError(null);
-
-        return valid;
     }
 
     @Override
@@ -169,5 +114,48 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean validateEmail(){
+
+        Editable email = mEmail.getText();
+        if(!TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            return true;
+        }
+        else{
+            return false;
+        }
+
+    }
+
+    private boolean validatePassword(){
+        String passStr = mPassword.getText().toString();
+        if(passStr.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{6,}$")){
+            return true;
+        }
+        else{
+            return false;
+        }
+
+    }
+
+    private boolean validateName(){
+        String nameStr = mName.getText().toString();
+        if(nameStr.matches("^[a-zA-Z0-9]*$")){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    private boolean validatePhone(){
+        String phoneStr = mPhone.getText().toString();
+        if(phoneStr.matches("^[0-9]{10,}$")){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }
