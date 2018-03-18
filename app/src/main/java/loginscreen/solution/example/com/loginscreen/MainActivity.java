@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mViewFlipper.setDisplayedChild(0);
-                mName.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -56,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mViewFlipper.setDisplayedChild(1);
-                mName.setVisibility(View.VISIBLE);
             }
         });
 
