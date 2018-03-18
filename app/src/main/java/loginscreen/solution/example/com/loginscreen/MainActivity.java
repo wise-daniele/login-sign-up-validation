@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
 
                 if(validation){
                     Intent intent = new Intent(MainActivity.this, LoginWelcomeActivity.class);
-                    Log.d("LOG", mName.getText() + " " + mEmail.getText() + " "  + mPhone.getText() + " ");
                     intent.putExtra("name", mName.getText());
                     intent.putExtra("email", mEmail.getText());
                     intent.putExtra("phone", mPhone.getText());
